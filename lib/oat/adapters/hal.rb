@@ -15,12 +15,12 @@ module Oat
       end
 
       def entity(name, obj, serializer_class = nil, context_options = {}, &block)
-        data[:_embedded][name] = serializer_from_block_or_class(obj, serializer_class, context_options, &block).to_hash
+        data[:_embedded][name] = serializer_from_block_or_class(obj, serializer_class, context_options, &block).try(:to_hash)
       end
 
       def entities(name, collection, serializer_class = nil, context_options = {}, &block)
         data[:_embedded][name] = collection.map do |obj|
-          serializer_from_block_or_class(obj, serializer_class, context_options, &block).to_hash
+          serializer_from_block_or_class(obj, serializer_class, context_options, &block).try(:to_hash)
         end
       end
 
