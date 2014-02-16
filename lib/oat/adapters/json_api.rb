@@ -10,6 +10,7 @@ end
 module Oat
   module Adapters
     class JsonAPI < Oat::Adapter
+      attr_reader :root_name
 
       def initialize(*args)
         super
@@ -33,11 +34,12 @@ module Oat
       end
 
       def entity(name, obj, serializer_class = nil, context_options = {}, &block)
-        @entities[name.to_s.pluralize.to_sym] ||= []
+        pluralized_name = name.to_s.pluralize.to_sym
+        @entities[pluralized_name] ||= []
         ent = entity_without_root(obj, serializer_class, context_options, &block)
         if ent
           link name, :href => ent[:id]
-          @entities[name.to_s.pluralize.to_sym] << ent
+          @entities[pluralized_name] << ent
         end
       end
 
@@ -66,9 +68,10 @@ module Oat
 
       attr_reader :root_name
 
-      def entity_without_root(obj, serializer_class = nil, context_options = {}, &block)
+      def entity_without_root(entity_key, obj, serializer_class = nil, context_options = {}, &block)
         ent = serializer_from_block_or_class(obj, serializer_class, context_options, &block)
-        ent.values.first.first if ent
+        # ent.tap{|o| p o}.values.tap{|o| p o}.first.tap{|o| p o}.first.tap{|o| p o} if ent
+        ent.tap{|o| p o}[ent.root_name.tap{|o| p o}].tap{|o| p o}.first.tap{|o| p o}.first.tap{|o| p o} if ent
       end
 
     end
