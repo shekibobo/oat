@@ -71,7 +71,7 @@ module Oat
       def entity_without_root(entity_key, obj, serializer_class = nil, context_options = {}, &block)
         ent = serializer_from_block_or_class(obj, serializer_class, context_options, &block)
         # ent.tap{|o| p o}.values.tap{|o| p o}.first.tap{|o| p o}.first.tap{|o| p o} if ent
-        ent.tap{|o| p o}[ent.root_name.tap{|o| p o}].tap{|o| p o}.first.tap{|o| p o}.first.tap{|o| p o} if ent
+        ent.to_hash.tap{|o| p o}[ent.root_name.tap{|o| p o}].tap{|o| p o}.first.tap{|o| p o}.first.tap{|o| p o} if ent
       end
 
     end
