@@ -19,6 +19,8 @@ module Oat
       def type(*types)
         @root_name = types.first.to_s
       end
+      attr_reader :root_name
+
 
       def link(rel, opts = {})
         data[:links][rel] = opts[:href]
@@ -65,18 +67,13 @@ module Oat
 
       protected
 
-      attr_reader :root_name
-
       def entity_without_root(obj, serializer_class = nil, context_options = {}, &block)
         ent = serializer_from_block_or_class(obj, serializer_class, context_options, &block)
-        root_key = root_name.pluralize.to_sym
-        if ent
-          pp root_key
-          pp ent
-          pp ent.fetch(root_key, []).first
-          pp ent.values.first.first
+        if ent && ent.root_name
+          root_key = ent.root_name.pluralize.to_sym
+          hash = ent.to_hash
+          hash.fetch(root_key, []).first
         end
-        ent.fetch(root_key, []).last if ent
       end
     end
   end
