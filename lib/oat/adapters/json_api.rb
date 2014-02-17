@@ -33,11 +33,12 @@ module Oat
       end
 
       def entity(name, obj, serializer_class = nil, context_options = {}, &block)
-        @entities[name.to_s.pluralize.to_sym] ||= []
+        root_key = name.to_s.pluralize.to_sym
+        @entities[root_key] ||= []
         ent = entity_without_root(obj, serializer_class, context_options, &block)
         if ent
           link name, :href => ent[:id]
-          @entities[name.to_s.pluralize.to_sym] << ent
+          @entities[root_key] << ent
         end
       end
 
@@ -68,9 +69,15 @@ module Oat
 
       def entity_without_root(obj, serializer_class = nil, context_options = {}, &block)
         ent = serializer_from_block_or_class(obj, serializer_class, context_options, &block)
-        ent.values.first.first if ent
+        root_key = root_name.pluralize.to_sym
+        if ent
+          pp root_key
+          pp ent
+          pp ent.fetch(root_key, []).first
+          pp ent.values.first.first
+        end
+        ent.fetch(root_key, []).last if ent
       end
-
     end
   end
 end
